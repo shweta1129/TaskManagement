@@ -36,3 +36,7 @@ npm-debug.log
 /assets/node_modules/
 
 /config/*.exs
+
+# Ignore SQLite temporary files
+*.sqlite3-shm
+*.sqlite3-wal
