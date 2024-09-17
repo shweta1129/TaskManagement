@@ -11,9 +11,12 @@ defmodule TaskManagement.Accounts.User do
   end
 
   @doc false
+  # Changeset for user creation
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:name, :email, :age])
-    |> validate_required([:name, :email, :age])
+    |> validate_required([:name, :email])
+    |> validate_format(:email, ~r/@/) 
+    |> unique_constraint(:email)
   end
 end
