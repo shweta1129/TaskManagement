@@ -40,3 +40,5 @@ npm-debug.log
 # Ignore SQLite temporary files
 *.sqlite3-shm
 *.sqlite3-wal
+*.sqlite3
+
