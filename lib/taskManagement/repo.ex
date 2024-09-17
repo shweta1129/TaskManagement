@@ -3,3 +3,4 @@ defmodule TaskManagement.Repo do
     otp_app: :taskManagement,
     adapter: Ecto.Adapters.SQLite3
 end
+
