@@ -17,6 +17,7 @@ defmodule TaskManagementWeb.Router do
     get "/:user_id/tasks", TaskController, :index
     get "/:user_id/tasks/:task_id", TaskController, :show
     put "/:user_id/tasks/:task_id", TaskController, :update
+    delete "/:user_id/tasks/:task_id", TaskController, :delete
 
   end
 end
