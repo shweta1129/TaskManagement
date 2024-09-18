@@ -8,6 +8,7 @@ defmodule TaskManagement.Accounts.User do
     field :name, :string
     field :email, :string
     field :age, :integer
+    has_many :tasks, TaskManagement.Accounts.Task  # Define the relationship
 
     timestamps(type: :utc_datetime)
   end
