@@ -14,6 +14,7 @@ defmodule TaskManagementWeb.Router do
 
     # Task routes
     post "/:user_id/tasks", TaskController, :create
+    get "/:user_id/tasks", TaskController, :index
 
   end
 end
