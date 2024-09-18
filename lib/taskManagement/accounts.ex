@@ -34,4 +34,10 @@ defmodule TaskManagement.Accounts do
     Repo.all(from t in Task, where: t.user_id == ^user_id)
   end
 
+    # function to get particular task for user
+  def get_task_for_user(user_id, task_id) do
+    Task
+    |> Repo.get_by(user_id: user_id, id: task_id)
+  end
+
 end
