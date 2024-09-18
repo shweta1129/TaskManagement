@@ -39,5 +39,11 @@ defmodule TaskManagement.Accounts do
     Task
     |> Repo.get_by(user_id: user_id, id: task_id)
   end
-
+  
+  # Update a task
+  def update_task(%Task{} = task, attrs) do
+    task
+    |> Task.changeset(attrs)
+    |> Repo.update()
+  end
 end
