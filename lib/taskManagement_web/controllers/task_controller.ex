@@ -27,4 +27,18 @@ defmodule TaskManagementWeb.TaskController do
     tasks = Accounts.get_tasks_for_user(user_id)
     json(conn, %{tasks: tasks})
   end
+
+   # GET specific task for specidifc user
+  def show(conn, %{"user_id" => user_id, "task_id" => task_id}) do
+    case Accounts.get_task_for_user(user_id, task_id) do
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{error: "Task not found"})
+
+      task ->
+        json(conn, %{task: task})
+    end
+  end
+
 end
