@@ -61,5 +61,28 @@ defmodule TaskManagementWeb.TaskController do
         |> render("error.json", changeset: changeset)
     end
   end
+  
+# DELETE /users/:user_id/tasks/:task_id
+def delete(conn, %{"user_id" => user_id, "task_id" => task_id}) do
+  case Accounts.get_task_for_user(user_id, task_id) do
+    nil ->
+      conn
+      |> put_status(:not_found)
+      |> json(%{error: "Task not found"})
+
+    task ->
+      case Accounts.delete_task(task) do
+        {:ok, _} ->
+          conn
+           |> put_status(:ok)
+           |> json(%{message: "Task deleted successfully"})
+
+        {:error, reason} ->
+          conn
+          |> put_status(:internal_server_error)
+          |> json(%{error: "Failed to delete task", reason: reason})
+      end
+  end
+end
 
 end
