@@ -10,5 +10,7 @@ defmodule TaskManagementWeb.Router do
 
     # User routes
     post "/", UserController, :create
+    get "/", UserController, :index
+
   end
 end
