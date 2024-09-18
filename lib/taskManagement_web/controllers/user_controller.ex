@@ -19,8 +19,14 @@ defmodule TaskManagementWeb.UserController do
         conn
         |> put_status(:unprocessable_entity)
         |> put_view(TaskManagementWeb.ChangesetView)
-        |> render("error.json", changeset: changeset) 
+        |> render("error.json", changeset: changeset)
       end
       end
+
+        # get all users
+  def index(conn, _params) do
+    users = Accounts.list_users()
+    json(conn, %{users: users})   
+  end
 
 end
