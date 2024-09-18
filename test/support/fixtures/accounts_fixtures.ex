@@ -19,4 +19,21 @@ defmodule TaskManagement.AccountsFixtures do
 
     user
   end
+
+  @doc """
+  Generate a task.
+  """
+  def task_fixture(attrs \\ %{}) do
+    {:ok, task} =
+      attrs
+      |> Enum.into(%{
+        description: "some description",
+        due_date: ~D[2024-09-17],
+        status: "some status",
+        title: "some title"
+      })
+      |> TaskManagement.Accounts.create_task()
+
+    task
+  end
 end
