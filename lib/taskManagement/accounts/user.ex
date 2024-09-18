@@ -2,6 +2,8 @@ defmodule TaskManagement.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+    @derive {Jason.Encoder, only: [:id, :name, :email, :age, :inserted_at, :updated_at]}
+
   schema "users" do
     field :name, :string
     field :email, :string
@@ -16,7 +18,7 @@ defmodule TaskManagement.Accounts.User do
     user
     |> cast(attrs, [:name, :email, :age])
     |> validate_required([:name, :email])
-    |> validate_format(:email, ~r/@/) 
+    |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
   end
 end
