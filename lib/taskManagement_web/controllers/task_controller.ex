@@ -22,4 +22,9 @@ defmodule TaskManagementWeb.TaskController do
     end
   end
 
+    # GET task with userid
+  def index(conn, %{"user_id" => user_id}) do
+    tasks = Accounts.get_tasks_for_user(user_id)
+    json(conn, %{tasks: tasks})
+  end
 end
