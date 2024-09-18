@@ -41,4 +41,25 @@ defmodule TaskManagementWeb.TaskController do
     end
   end
 
+  # update speicif task for user
+  def update(conn, %{"user_id" => user_id, "task_id" => task_id, "task" => task_params}) do
+    with task when not is_nil(task) <- Accounts.get_task_for_user(user_id, task_id),
+         {:ok, updated_task} <- Accounts.update_task(task, task_params) do
+      conn
+      |> put_status(:ok)
+      |> json(%{message: "Task updated successfully", task: updated_task})
+    else
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{error: "Task not found"})
+
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> put_view(TaskManagementWeb.ChangesetView)
+        |> render("error.json", changeset: changeset)
+    end
+  end
+
 end
