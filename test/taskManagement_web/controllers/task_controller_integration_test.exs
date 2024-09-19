@@ -95,5 +95,16 @@ defmodule TaskManagementWeb.TaskIntegrationTest do
       assert %{"tasks" => tasks} = json_response(conn, 200)
       assert hd(tasks)["title"] == "Finish Project"  # Task was not updated
     end
+
+        test "handles task not found during delete and update", %{conn: conn} do
+      {:ok, user} = Accounts.create_user(@create_user_attrs)
+
+      conn = put(conn, "/api/users/#{user.id}/tasks/999", task: @update_task_attrs)
+      assert %{"error" => "Task not found"} = json_response(conn, 404)
+
+      conn = delete(conn, "/api/users/#{user.id}/tasks/999")
+      assert %{"error" => "Task not found"} = json_response(conn, 404)
+    end
+
   end
 end
