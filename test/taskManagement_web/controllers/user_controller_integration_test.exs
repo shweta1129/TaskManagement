@@ -17,4 +17,16 @@ defmodule TaskManagementWeb.UserIntegrationTest do
       assert hd(users)["email"] == "henry.mark@gmail.com"
     end
   end
+
+      test "handles invalid user creation and then verifies user list is empty", %{conn: conn} do
+      # Attempt to create an invalid user
+      conn = post(conn, "/api/users", user: @invalid_attrs)
+      assert %{"errors" => _} = json_response(conn, 422)
+
+      # Fetch all users and verify no users are present
+      conn = get(conn, "/api/users")
+      assert %{"users" => users} = json_response(conn, 200)
+      assert length(users) == 0
+    end
+
 end
