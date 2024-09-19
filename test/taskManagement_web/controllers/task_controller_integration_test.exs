@@ -84,5 +84,16 @@ defmodule TaskManagementWeb.TaskIntegrationTest do
       assert length(tasks) == 0
     end
 
+     test "handles invalid task update and verifies task remains unchanged", %{conn: conn} do
+      {:ok, user} = Accounts.create_user(@create_user_attrs)
+      {:ok, task} = Accounts.create_task(Map.put(@create_task_attrs, :user_id, user.id))
+
+      conn = put(conn, "/api/users/#{user.id}/tasks/#{task.id}", task: @invalid_task_attrs)
+      assert %{"errors" => _} = json_response(conn, 422)
+
+      conn = get(conn, "/api/users/#{user.id}/tasks")
+      assert %{"tasks" => tasks} = json_response(conn, 200)
+      assert hd(tasks)["title"] == "Finish Project"  # Task was not updated
+    end
   end
 end
