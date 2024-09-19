@@ -45,7 +45,13 @@ defmodule TaskManagementWeb.TaskIntegrationTest do
   assert returned_task["title"] == "Finish Project"
     end
 
+    test "returns a 404 error when retrieving a non-existent task", %{conn: conn} do
+      {:ok, user} = Accounts.create_user(@create_user_attrs)
+      non_existent_task_id = -1  # Assuming IDs are positive integers
+      conn = get(conn, "/api/users/#{user.id}/tasks/#{non_existent_task_id}")
 
+      assert %{"error" => "Task not found"} = json_response(conn, 404)
+    end
 
 
   end
