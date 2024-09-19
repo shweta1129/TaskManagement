@@ -5,6 +5,12 @@ defmodule TaskManagementWeb.TaskIntegrationTest do
   @create_user_attrs %{name: "Marie", email: "marie@gmail.com", age: 30}
   @create_task_attrs %{title: "Finish Project", description: "Complete the project by the end of the week.", due_date: "2024-09-24", status: "To Do"}
   @invalid_task_attrs %{title: nil, description: nil, due_date: nil, status: nil}
+  @update_task_attrs %{
+  title: "Updated Project",
+  description: "Updated description.",
+  due_date: "2024-09-30",
+  status: "In Progress"
+  }
 
 
   describe "Task API Integration" do
@@ -53,6 +59,18 @@ defmodule TaskManagementWeb.TaskIntegrationTest do
       assert %{"error" => "Task not found"} = json_response(conn, 404)
     end
 
+    test "successfully updates a task and verifies the changes", %{conn: conn} do
+      {:ok, user} = Accounts.create_user(@create_user_attrs)
+      {:ok, task} = Accounts.create_task(Map.put(@create_task_attrs, :user_id, user.id))
+
+      conn = put(conn, "/api/users/#{user.id}/tasks/#{task.id}", task: @update_task_attrs)
+      assert %{"message" => "Task updated successfully", "task" => _} = json_response(conn, 200)
+
+      conn = get(conn, "/api/users/#{user.id}/tasks")
+      assert %{"tasks" => tasks} = json_response(conn, 200)
+      assert length(tasks) == 1
+      assert hd(tasks)["title"] == "Updated Project"
+    end
 
   end
 end
