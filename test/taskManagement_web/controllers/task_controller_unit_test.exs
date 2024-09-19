@@ -5,6 +5,12 @@ defmodule TaskManagementWeb.TaskControllerTest do
   @create_user_attrs %{name: "Marie", email: "marie@gmail.com", age: 30}
   @create_task_attrs %{title: "Finish Project", description: "Complete the project by the end of the week.", due_date: "2024-09-24", status: "To Do"}
   @invalid_task_attrs %{title: nil, description: nil, due_date: nil, status: nil}
+  @update_task_attrs %{
+    title: "Updated Project",
+    description: "Updated description.",
+    due_date: "2024-09-30",
+    status: "In Progress"
+  }
 
   describe "POST /users/:user_id/tasks" do
     test "creates a new task for a user and returns 201 status", %{conn: conn} do
@@ -78,5 +84,37 @@ defmodule TaskManagementWeb.TaskControllerTest do
       assert %{"error" => "Task not found"} = json_response(conn, 404)
     end
   end
+
+  describe "PUT /users/:user_id/tasks/:task_id" do
+  test "successfully updates a task", %{conn: conn} do
+    {:ok, user} = Accounts.create_user(@create_user_attrs)
+    {:ok, task} = Accounts.create_task(Map.put(@create_task_attrs, :user_id, user.id))
+
+    conn = put(conn, "/api/users/#{user.id}/tasks/#{task.id}", %{"task" => @update_task_attrs})
+
+    assert %{"message" => "Task updated successfully", "task" => updated_task} = json_response(conn, 200)
+    assert updated_task["title"] == "Updated Project"
+    assert updated_task["description"] == "Updated description."
+    assert updated_task["due_date"] == "2024-09-30"
+    assert updated_task["status"] == "In Progress"
+  end
+
+  test "returns 404 if task does not exist", %{conn: conn} do
+    {:ok, user} = Accounts.create_user(@create_user_attrs)
+
+    conn = put(conn, "/api/users/#{user.id}/tasks/999", %{"task" => @update_task_attrs})
+
+    assert %{"error" => "Task not found"} = json_response(conn, 404)
+  end
+
+  test "returns 422 when task update params are invalid", %{conn: conn} do
+    {:ok, user} = Accounts.create_user(@create_user_attrs)
+    {:ok, task} = Accounts.create_task(Map.put(@create_task_attrs, :user_id, user.id))
+
+    conn = put(conn, "/api/users/#{user.id}/tasks/#{task.id}", %{"task" => @invalid_task_attrs})
+
+    assert %{"errors" => _} = json_response(conn, 422)
+  end
+end
 
 end
