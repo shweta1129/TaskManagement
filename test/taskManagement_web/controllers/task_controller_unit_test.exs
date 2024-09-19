@@ -117,4 +117,23 @@ defmodule TaskManagementWeb.TaskControllerTest do
   end
 end
 
+  describe "DELETE /users/:user_id/tasks/:task_id" do
+    test "successfully deletes a task", %{conn: conn} do
+      {:ok, user} = Accounts.create_user(@create_user_attrs)
+      {:ok, task} = Accounts.create_task(Map.put(@create_task_attrs, :user_id, user.id))
+
+      conn = delete(conn, "/api/users/#{user.id}/tasks/#{task.id}")
+
+      assert %{"message" => "Task deleted successfully"} = json_response(conn, 200)
+    end
+
+    test "returns 404 if task does not exist", %{conn: conn} do
+      {:ok, user} = Accounts.create_user(@create_user_attrs)
+
+      conn = delete(conn, "/api/users/#{user.id}/tasks/999")
+
+      assert %{"error" => "Task not found"} = json_response(conn, 404)
+    end
+  end
+
 end
