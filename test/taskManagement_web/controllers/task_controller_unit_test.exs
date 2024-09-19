@@ -26,4 +26,30 @@ defmodule TaskManagementWeb.TaskControllerTest do
     end
   end
 
+    describe "GET /users/:user_id/tasks" do
+    test "lists all tasks for a user", %{conn: conn} do
+      {:ok, user} = Accounts.create_user(@create_user_attrs)
+      {:ok, _task} = Accounts.create_task(%{
+        title: "Finish Project",
+        description: "Complete the project by the end of the week.",
+        due_date: "2024-09-24",
+        status: "To Do",
+        user_id: user.id
+      })
+      conn = get(conn, "/api/users/#{user.id}/tasks")
+
+      assert %{"tasks" => tasks} = json_response(conn, 200)
+      assert length(tasks) == 1
+      assert hd(tasks)["title"] == "Finish Project"
+    end
+
+    test "returns an empty list when the user has no tasks", %{conn: conn} do
+      {:ok, user} = Accounts.create_user(@create_user_attrs)
+      conn = get(conn, "/api/users/#{user.id}/tasks")
+
+      assert %{"tasks" => tasks} = json_response(conn, 200)
+      assert length(tasks) == 0
+    end
+  end
+
 end
