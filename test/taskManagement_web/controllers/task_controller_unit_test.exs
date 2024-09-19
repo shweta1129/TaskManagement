@@ -52,4 +52,31 @@ defmodule TaskManagementWeb.TaskControllerTest do
     end
   end
 
+    describe "GET /users/:user_id/tasks/:task_id" do
+    test "returns a specific task for a user", %{conn: conn} do
+      {:ok, user} = Accounts.create_user(@create_user_attrs)
+      {:ok, task} = Accounts.create_task(%{
+        title: "Finish Project",
+        description: "Complete the project by the end of the week.",
+        due_date: "2024-09-22",
+        status: "To Do",
+        user_id: user.id
+      })
+      conn = get(conn, "/api/users/#{user.id}/tasks/#{task.id}")
+
+      assert %{"task" => returned_task} = json_response(conn, 200)
+      assert returned_task["title"] == "Finish Project"
+    end
+
+    test "returns a 404 error when the task does not exist for the user", %{conn: conn} do
+      {:ok, user} = Accounts.create_user(@create_user_attrs)
+
+      # Use a task ID that does not exist for this user
+      non_existent_task_id = -1  # Assuming IDs are positive integers
+      conn = get(conn, "/api/users/#{user.id}/tasks/#{non_existent_task_id}")
+
+      assert %{"error" => "Task not found"} = json_response(conn, 404)
+    end
+  end
+
 end
