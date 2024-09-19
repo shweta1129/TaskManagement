@@ -72,5 +72,17 @@ defmodule TaskManagementWeb.TaskIntegrationTest do
       assert hd(tasks)["title"] == "Updated Project"
     end
 
+    test "successfully deletes a task and verifies task list is empty", %{conn: conn} do
+      {:ok, user} = Accounts.create_user(@create_user_attrs)
+      {:ok, task} = Accounts.create_task(Map.put(@create_task_attrs, :user_id, user.id))
+
+      conn = delete(conn, "/api/users/#{user.id}/tasks/#{task.id}")
+      assert %{"message" => "Task deleted successfully"} = json_response(conn, 200)
+
+      conn = get(conn, "/api/users/#{user.id}/tasks")
+      assert %{"tasks" => tasks} = json_response(conn, 200)
+      assert length(tasks) == 0
+    end
+
   end
 end
