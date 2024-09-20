@@ -35,7 +35,6 @@ taskManagement-*.tar
 npm-debug.log
 /assets/node_modules/
 
-/config/*.exs
 
 # Ignore SQLite temporary files
 *.sqlite3-shm
